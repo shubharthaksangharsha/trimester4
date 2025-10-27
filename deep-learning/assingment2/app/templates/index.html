@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction - Perceptron Models</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <!-- Three.js Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <header>
+            <h1>Diabetes Prediction System</h1>
+            <p class="subtitle">Using Perceptron Neural Network Models</p>
+        </header>
+
+        <!-- Model Information Section -->
+        <section class="model-info-section">
+            <h2>Available Models</h2>
+            <div id="model-cards" class="model-cards">
+                <!-- Model cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Data Loading Section -->
+        <section class="data-section">
+            <h2>Load Data</h2>
+            <div class="form-group">
+                <label for="data-type">Data Source:</label>
+                <select id="data-type">
+                    <option value="train">Training Data (614 samples)</option>
+                    <option value="test">Test Data (154 samples)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="sample-size">Sample Size:</label>
+                <input type="number" id="sample-size" placeholder="Leave empty for all data" min="1">
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="random-sample">
+                <label for="random-sample">Random Sampling</label>
+            </div>
+
+            <button class="btn btn-primary" onclick="loadData()">Load Data</button>
+            
+            <div id="data-info" class="data-info" style="display: none;">
+                <h3>Data Summary</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-value" id="total-samples">0</span>
+                        <span class="stat-label">Total Samples</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="diabetic-count">0</span>
+                        <span class="stat-label">Diabetic</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="non-diabetic-count">0</span>
+                        <span class="stat-label">Non-Diabetic</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="feature-count">8</span>
+                        <span class="stat-label">Features</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Manual Input Section -->
+        <section class="manual-input-section">
+            <h2>Manual Input (Optional)</h2>
+            <button class="btn btn-secondary" onclick="toggleManualInput()">
+                <span id="manual-toggle-text">Show Manual Input</span>
+            </button>
+            
+            <div id="manual-input-form" style="display: none;">
+                <div class="input-grid">
+                    {% for feature in features %}
+                    <div class="form-group">
+                        <label for="input-{{ feature }}">{{ feature }}:</label>
+                        <input type="number" id="input-{{ feature }}" step="0.01" placeholder="Enter value">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Selection Section -->
+        <section class="model-selection-section">
+            <h2>Select Model(s)</h2>
+            
+            <div class="model-selection-options">
+                <div class="form-group checkbox-group">
+                    <input type="radio" id="single-model" name="selection-mode" value="single" checked>
+                    <label for="single-model">Select Single Model</label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="radio" id="compare-all" name="selection-mode" value="compare">
+                    <label for="compare-all">Compare All Models</label>
+                </div>
+            </div>
+
+            <div id="single-model-select" class="model-checkboxes">
+                {% for key, name in models.items() %}
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="model-{{ key }}" value="{{ key }}" class="model-checkbox">
+                    <label for="model-{{ key }}">{{ name }}</label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button class="btn btn-success" onclick="makePrediction()">
+                Make Prediction
+            </button>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <h2>Results</h2>
+            <div id="results-container">
+                <!-- Results will be displayed here -->
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Built with Flask, Three.js & Perceptron Neural Networks | Assignment 2</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/animation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
